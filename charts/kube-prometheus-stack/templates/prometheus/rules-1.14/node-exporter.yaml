@@ -1,3 +1,5 @@
+# TODO(bhavin192): can port these for db nodes?
+# TODO(bhavin192): FIX ME: add node-exporter label?
 {{- /*
 Generated from 'node-exporter' group from https://raw.githubusercontent.com/prometheus-operator/kube-prometheus/main/manifests/node-exporter-prometheusRule.yaml
 Do not change in-place! In order to change this file first read following link:

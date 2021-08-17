@@ -22,6 +22,8 @@ metadata:
 {{- end }}
 spec:
   groups:
+  # TODO(bhavin192): FIX ME: ask Shaunak about this, can't we have
+  # instances with same ip, across multiple clusters?
   - name: kube-prometheus-node-recording.rules
     rules:
     - expr: sum(rate(node_cpu_seconds_total{mode!="idle",mode!="iowait",mode!="steal"}[3m])) BY (instance)

@@ -45,6 +45,7 @@ spec:
         description: Pod {{`{{`}} $labels.namespace {{`}}`}}/{{`{{`}} $labels.pod {{`}}`}} has been in a non-ready state for longer than 15 minutes.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubepodnotready
         summary: Pod has been in a non-ready state for more than 15 minutes.
+      # TODO(bhavin192): FIX ME: might need a change.
       expr: |-
         sum by (namespace, pod) (
           max by(namespace, pod) (
@@ -200,6 +201,7 @@ spec:
         description: Pod {{`{{`}} $labels.namespace {{`}}`}}/{{`{{`}} $labels.pod {{`}}`}} container {{`{{`}} $labels.container{{`}}`}} has been in waiting state for longer than 1 hour.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubecontainerwaiting
         summary: Pod container waiting longer than 1 hour
+      # TODO(bhavin192): FIX ME: needs to be changed.
       expr: sum by (namespace, pod, container) (kube_pod_container_status_waiting_reason{job="kube-state-metrics", namespace=~"{{ $targetNamespace }}"}) > 0
       for: 1h
       labels:

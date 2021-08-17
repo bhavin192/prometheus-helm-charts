@@ -1,3 +1,7 @@
+# TODO(bhavin192): needs to be changed, should be done for
+# monitoring-core.
+
+# TODO(bhavin192): FIX ME: what about the monitoring-edge prometheus?
 {{- /*
 Generated from 'prometheus' group from https://raw.githubusercontent.com/prometheus-operator/kube-prometheus/main/manifests/prometheus-prometheusRule.yaml
 Do not change in-place! In order to change this file first read following link:

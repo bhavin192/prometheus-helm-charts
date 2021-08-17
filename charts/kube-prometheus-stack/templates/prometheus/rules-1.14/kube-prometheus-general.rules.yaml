@@ -23,6 +23,7 @@ metadata:
 spec:
   groups:
   - name: kube-prometheus-general.rules
+    # TODO(bhavin192): don't know the significance of this yet.
     rules:
     - expr: count without(instance, pod, node) (up == 1)
       record: count:up1

@@ -1,3 +1,4 @@
+# TODO(bhavin192): FIX ME: this needs to be enabled on the monitoring-core.
 {{- /*
 Generated from 'alertmanager.rules' group from https://raw.githubusercontent.com/prometheus-operator/kube-prometheus/main/manifests/alertmanager-prometheusRule.yaml
 Do not change in-place! In order to change this file first read following link:
@@ -81,6 +82,7 @@ spec:
         description: The minimum notification failure rate to {{`{{`}} $labels.integration {{`}}`}} sent from any instance in the {{`{{`}}$labels.job{{`}}`}} cluster is {{`{{`}} $value | humanizePercentage {{`}}`}}.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-alertmanagerclusterfailedtosendalerts
         summary: All Alertmanager instances in a cluster failed to send notifications to a critical integration.
+      # TODO(bhavin192): might need to update this in upstream.
       expr: |-
         min by (namespace,service, integration) (
           rate(alertmanager_notifications_failed_total{job="{{ $alertmanagerJob }}",namespace="{{ $namespace }}", integration=~`.*`}[5m])
@@ -99,6 +101,7 @@ spec:
         description: The minimum notification failure rate to {{`{{`}} $labels.integration {{`}}`}} sent from any instance in the {{`{{`}}$labels.job{{`}}`}} cluster is {{`{{`}} $value | humanizePercentage {{`}}`}}.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-alertmanagerclusterfailedtosendalerts
         summary: All Alertmanager instances in a cluster failed to send notifications to a non-critical integration.
+      # TODO(bhavin192): might need to update this in upstream.
       expr: |-
         min by (namespace,service, integration) (
           rate(alertmanager_notifications_failed_total{job="{{ $alertmanagerJob }}",namespace="{{ $namespace }}", integration!~`.*`}[5m])
@@ -117,6 +120,7 @@ spec:
         description: Alertmanager instances within the {{`{{`}}$labels.job{{`}}`}} cluster have different configurations.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-alertmanagerconfiginconsistent
         summary: Alertmanager instances within the same cluster have different configurations.
+      # TODO(bhavin192): might need to update this in upstream.
       expr: |-
         count by (namespace,service) (
           count_values by (namespace,service) ("config_hash", alertmanager_config_hash{job="{{ $alertmanagerJob }}",namespace="{{ $namespace }}"})
@@ -133,6 +137,7 @@ spec:
         description: '{{`{{`}} $value | humanizePercentage {{`}}`}} of Alertmanager instances within the {{`{{`}}$labels.job{{`}}`}} cluster have been up for less than half of the last 5m.'
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-alertmanagerclusterdown
         summary: Half or more of the Alertmanager instances within the same cluster are down.
+      # TODO(bhavin192): might need to update this in upstream.
       expr: |-
         (
           count by (namespace,service) (
@@ -155,6 +160,7 @@ spec:
         description: '{{`{{`}} $value | humanizePercentage {{`}}`}} of Alertmanager instances within the {{`{{`}}$labels.job{{`}}`}} cluster have restarted at least 5 times in the last 10m.'
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-alertmanagerclustercrashlooping
         summary: Half or more of the Alertmanager instances within the same cluster are crashlooping.
+      # TODO(bhavin192): might need to update this in upstream.
       expr: |-
         (
           count by (namespace,service) (
