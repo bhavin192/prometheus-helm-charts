@@ -24,7 +24,7 @@ spec:
   groups:
   - name: node.rules
     rules:
-    # TODO(bhavin192): FIX ME: needs to be changed?
+    # TODO(bhavin192): FIX ME: needs to be changed? Shaunak?
     - expr: |-
         topk by(namespace, pod) (1,
           max by (node, namespace, pod) (

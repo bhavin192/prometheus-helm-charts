@@ -73,7 +73,8 @@ spec:
         description: kube-state-metrics shards are missing, some Kubernetes objects are not being exposed.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubestatemetricsshardsmissing
         summary: kube-state-metrics shards are missing.
-      # TODO(bhavin192): FIX ME: might need to change the by ()
+      # TODO(bhavin192): FIX ME: might need to change the by (), the
+      # metric is not available.
       expr: |-
         2^max(kube_state_metrics_total_shards{job="kube-state-metrics"}) - 1
           -
