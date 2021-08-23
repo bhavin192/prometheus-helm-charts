@@ -145,11 +145,10 @@ spec:
         description: '{{`{{`}} $value | humanizePercentage {{`}}`}} throttling of CPU in namespace {{`{{`}} $labels.namespace {{`}}`}} for container {{`{{`}} $labels.container {{`}}`}} in pod {{`{{`}} $labels.pod {{`}}`}}.'
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-cputhrottlinghigh
         summary: Processes experience elevated CPU throttling.
-      # TODO(bhavin192): FIX ME: needs to be changed.
       expr: |-
-        sum(increase(container_cpu_cfs_throttled_periods_total{container!="", }[5m])) by (container, pod, namespace)
+        sum(increase(container_cpu_cfs_throttled_periods_total{container!="", }[5m])) by (container, pod, namespace, cluster)
           /
-        sum(increase(container_cpu_cfs_periods_total{}[5m])) by (container, pod, namespace)
+        sum(increase(container_cpu_cfs_periods_total{}[5m])) by (container, pod, namespace, cluster)
           > ( 25 / 100 )
       for: 15m
       labels:

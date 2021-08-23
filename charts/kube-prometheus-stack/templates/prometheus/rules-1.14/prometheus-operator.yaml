@@ -35,8 +35,7 @@ spec:
         description: Errors while performing List operations in controller {{`{{`}}$labels.controller{{`}}`}} in {{`{{`}}$labels.namespace{{`}}`}} namespace.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-prometheusoperatorlisterrors
         summary: Errors while performing list operations in controller.
-      # TODO(bhavin192): FIX ME: this should account for cluster.
-      expr: (sum by (controller,namespace) (rate(prometheus_operator_list_operations_failed_total{job="{{ $operatorJob }}",namespace="{{ $namespace }}"}[10m])) / sum by (controller,namespace) (rate(prometheus_operator_list_operations_total{job="{{ $operatorJob }}",namespace="{{ $namespace }}"}[10m]))) > 0.4
+      expr: (sum by (controller,namespace,cluster) (rate(prometheus_operator_list_operations_failed_total{job="{{ $operatorJob }}",namespace="{{ $namespace }}"}[10m])) / sum by (controller,namespace,cluster) (rate(prometheus_operator_list_operations_total{job="{{ $operatorJob }}",namespace="{{ $namespace }}"}[10m]))) > 0.4
       for: 15m
       labels:
         severity: warning
@@ -48,8 +47,7 @@ spec:
         description: Errors while performing watch operations in controller {{`{{`}}$labels.controller{{`}}`}} in {{`{{`}}$labels.namespace{{`}}`}} namespace.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-prometheusoperatorwatcherrors
         summary: Errors while performing watch operations in controller.
-      # TODO(bhavin192): FIX ME: this should account for cluster.
-      expr: (sum by (controller,namespace) (rate(prometheus_operator_watch_operations_failed_total{job="{{ $operatorJob }}",namespace="{{ $namespace }}"}[10m])) / sum by (controller,namespace) (rate(prometheus_operator_watch_operations_total{job="{{ $operatorJob }}",namespace="{{ $namespace }}"}[10m]))) > 0.4
+      expr: (sum by (controller,namespace,cluster) (rate(prometheus_operator_watch_operations_failed_total{job="{{ $operatorJob }}",namespace="{{ $namespace }}"}[10m])) / sum by (controller,namespace,cluster) (rate(prometheus_operator_watch_operations_total{job="{{ $operatorJob }}",namespace="{{ $namespace }}"}[10m]))) > 0.4
       for: 15m
       labels:
         severity: warning
@@ -73,8 +71,7 @@ spec:
         description: '{{`{{`}} $value | humanizePercentage {{`}}`}} of reconciling operations failed for {{`{{`}} $labels.controller {{`}}`}} controller in {{`{{`}} $labels.namespace {{`}}`}} namespace.'
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-prometheusoperatorreconcileerrors
         summary: Errors while reconciling controller.
-      # TODO(bhavin192): FIX ME: this should account for cluster.
-      expr: (sum by (controller,namespace) (rate(prometheus_operator_reconcile_errors_total{job="{{ $operatorJob }}",namespace="{{ $namespace }}"}[5m]))) / (sum by (controller,namespace) (rate(prometheus_operator_reconcile_operations_total{job="{{ $operatorJob }}",namespace="{{ $namespace }}"}[5m]))) > 0.1
+      expr: (sum by (controller,namespace,cluster) (rate(prometheus_operator_reconcile_errors_total{job="{{ $operatorJob }}",namespace="{{ $namespace }}"}[5m]))) / (sum by (controller,namespace,cluster) (rate(prometheus_operator_reconcile_operations_total{job="{{ $operatorJob }}",namespace="{{ $namespace }}"}[5m]))) > 0.1
       for: 10m
       labels:
         severity: warning
@@ -98,8 +95,7 @@ spec:
         description: Prometheus operator in {{`{{`}} $labels.namespace {{`}}`}} namespace isn't ready to reconcile {{`{{`}} $labels.controller {{`}}`}} resources.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-prometheusoperatornotready
         summary: Prometheus operator not ready
-      # TODO(bhavin192): FIX ME: this should account for cluster.
-      expr: min by(namespace, controller) (max_over_time(prometheus_operator_ready{job="{{ $operatorJob }}",namespace="{{ $namespace }}"}[5m]) == 0)
+      expr: min by(namespace, controller,cluster) (max_over_time(prometheus_operator_ready{job="{{ $operatorJob }}",namespace="{{ $namespace }}"}[5m]) == 0)
       for: 5m
       labels:
         severity: warning

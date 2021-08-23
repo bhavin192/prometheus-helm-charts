@@ -53,15 +53,13 @@ spec:
         description: Kubelet '{{`{{`}} $labels.node {{`}}`}}' is running at {{`{{`}} $value | humanizePercentage {{`}}`}} of its Pod capacity.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubelettoomanypods
         summary: Kubelet is running at capacity.
-      # TODO(bhavin192): FIX ME: does the count by (node) affect here?
-      # is it assumed that every node name is going to be unique
-      # across all the clusters?
+      # TODO(bhavin192): FIX ME: Shaunak, why topk is used here?
       expr: |-
-        count by(node) (
+        count by(node, cluster) (
           (kube_pod_status_phase{job="kube-state-metrics",phase="Running"} == 1) * on(instance,pod,namespace,cluster) group_left(node) topk by(instance,pod,namespace,cluster) (1, kube_pod_info{job="kube-state-metrics"})
         )
         /
-        max by(node) (
+        max by(node, cluster) (
           kube_node_status_capacity{job="kube-state-metrics",resource="pods"} != 1
         ) > 0.95
       for: 15m
@@ -75,10 +73,7 @@ spec:
         description: The readiness status of node {{`{{`}} $labels.node {{`}}`}} has changed {{`{{`}} $value {{`}}`}} times in the last 15 minutes.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubenodereadinessflapping
         summary: Node readiness status is flapping.
-      # TODO(bhavin192): FIX ME: does the by (node) affect here?  is
-      # it assumed that every node name is going to be unique across
-      # all the clusters?
-      expr: sum(changes(kube_node_status_condition{status="true",condition="Ready"}[15m])) by (node) > 2
+      expr: sum(changes(kube_node_status_condition{status="true",condition="Ready"}[15m])) by (node, cluster) > 2
       for: 15m
       labels:
         severity: warning
@@ -102,8 +97,7 @@ spec:
         description: Kubelet Pod startup 99th percentile latency is {{`{{`}} $value {{`}}`}} seconds on node {{`{{`}} $labels.node {{`}}`}}.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubeletpodstartuplatencyhigh
         summary: Kubelet Pod startup latency is too high.
-      # TODO(bhavin192): FIX ME: how does instance, le etc affect here
-      expr: histogram_quantile(0.99, sum(rate(kubelet_pod_worker_duration_seconds_bucket{job="kubelet", metrics_path="/metrics"}[5m])) by (instance, le)) * on(instance) group_left(node) kubelet_node_name{job="kubelet", metrics_path="/metrics"} > 60
+      expr: histogram_quantile(0.99, sum(rate(kubelet_pod_worker_duration_seconds_bucket{job="kubelet", metrics_path="/metrics"}[5m])) by (instance, cluster, le)) * on(instance, cluster) group_left(node) kubelet_node_name{job="kubelet", metrics_path="/metrics"} > 60
       for: 15m
       labels:
         severity: warning

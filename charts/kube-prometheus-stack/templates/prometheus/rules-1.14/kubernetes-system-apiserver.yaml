@@ -29,9 +29,7 @@ spec:
         description: A client certificate used to authenticate to the apiserver is expiring in less than 7.0 days.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubeclientcertificateexpiration
         summary: Client certificate is about to expire.
-      # TODO(bhavin192): FIX ME: understand what the on() and sum by
-      # is doing here?
-      expr: apiserver_client_certificate_expiration_seconds_count{job="apiserver"} > 0 and on(job) histogram_quantile(0.01, sum by (job, le) (rate(apiserver_client_certificate_expiration_seconds_bucket{job="apiserver"}[5m]))) < 604800
+      expr: apiserver_client_certificate_expiration_seconds_count{job="apiserver"} > 0 and on(job, cluster) histogram_quantile(0.01, sum by (job, cluster, le) (rate(apiserver_client_certificate_expiration_seconds_bucket{job="apiserver"}[5m]))) < 604800
       labels:
         severity: warning
 {{- if .Values.defaultRules.additionalRuleLabels }}
@@ -53,8 +51,7 @@ spec:
         description: An aggregated API {{`{{`}} $labels.name {{`}}`}}/{{`{{`}} $labels.namespace {{`}}`}} has reported errors. It has appeared unavailable {{`{{`}} $value | humanize {{`}}`}} times averaged over the past 10m.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-aggregatedapierrors
         summary: An aggregated API has reported errors.
-      # TODO(bhavin192): FIX ME: needs to be changed.
-      expr: sum by(name, namespace)(increase(aggregator_unavailable_apiservice_total[10m])) > 4
+      expr: sum by(name, namespace, cluster)(increase(aggregator_unavailable_apiservice_total[10m])) > 4
       labels:
         severity: warning
 {{- if .Values.defaultRules.additionalRuleLabels }}
@@ -66,8 +63,7 @@ spec:
         description: An aggregated API {{`{{`}} $labels.name {{`}}`}}/{{`{{`}} $labels.namespace {{`}}`}} has been only {{`{{`}} $value | humanize {{`}}`}}% available over the last 10m.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-aggregatedapidown
         summary: An aggregated API is down.
-      # TODO(bhavin192): FIX ME: needs to be changed.
-      expr: (1 - max by(name, namespace)(avg_over_time(aggregator_unavailable_apiservice[10m]))) * 100 < 85
+      expr: (1 - max by(name, namespace, cluster)(avg_over_time(aggregator_unavailable_apiservice[10m]))) * 100 < 85
       for: 5m
       labels:
         severity: warning
